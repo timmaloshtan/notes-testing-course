@@ -29,5 +29,73 @@ describe('App', () => {
     
     
   });
+
+  describe('when creating a note', () => {
+    let testNote = 'test note';
+    beforeEach(() => {
+      app.find('FormControl').simulate('change', { target: { value: testNote } });
+    });
+
+    it('should update the text in state', () => {
+      expect(app.state().text).toEqual(testNote);
+    });
+
+    describe('and submitting a form', () => {
+      beforeEach(() => {
+        app.find('form').simulate('submit');
+      });
+
+      afterEach(() => {
+        app.find('.btn').at(1).simulate('click');
+      });
+
+      it('should add new note to state', () => {
+        expect(app.state().notes[0].text).toEqual(testNote);
+      });
+    })
+    
+
+    describe('and clicking a Submit button', () => {
+      beforeEach(() => {
+        app.find('.btn').at(0).simulate('click');
+      });
+
+      afterEach(() => {
+        app.find('.btn').at(1).simulate('click');
+      });
+
+      it('should add new note to state', () => {
+        expect(app.state().notes[0].text).toEqual(testNote);
+      });
+
+      describe('and remounting the component', () => {
+        let app2;
+
+        beforeEach(() => {
+          app2 = mount(<App />);
+        });
+
+        it('should read the stored note cookies', () => {
+          expect(app2.state().notes).toEqual([{ text: testNote }]);
+        });
+        
+      });
+      
+
+      describe('and clicking a Clear button', () => {
+        beforeEach(() => {
+          app.find('.btn').at(1).simulate('click');
+        });
+
+        it('should clear the notes in the state', () => {
+          expect(app.state().notes).toEqual([]);
+        });
+        
+      });
+      
+      
+    });
+  });
+  
   
 });
